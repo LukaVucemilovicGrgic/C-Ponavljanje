@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Vjezba_Luka_Vucemilovic_Grgic
 {
-    internal class Program
+    class Program : Methods
     {
         static void Main(string[] args)
         {
@@ -166,6 +167,7 @@ namespace Vjezba_Luka_Vucemilovic_Grgic
 
 
                     case 5:
+
                         List<int> izvuceniBrojevi = new List<int>();
                         Random rand = new Random();
 
@@ -186,10 +188,108 @@ namespace Vjezba_Luka_Vucemilovic_Grgic
                         }
 
                         break;
+
                     case 6:
+
+                        // Naslov listića
+                        Console.WriteLine("Loto 6 od 49 - Ticket");
+
+                        // Generiranje brojeva u rasponu od 1 do 49
+                        List<int> brojevi = new List<int>();
+                        Random random = new Random();
+                        while (brojevi.Count < 6)
+                        {
+                            int broj = random.Next(1, 50);
+                            if (!brojevi.Contains(broj))
+                            {
+                                brojevi.Add(broj);
+                            }
+                        }
+                        // Ispisivanje brojeva u matrici 7x7
+                        int[,] matrica = new int[7, 7];
+                        for (int i = 0; i < 7; i++)
+                        {
+                            for (int j = 0; j < 7; j++)
+                            {
+                                matrica[i, j] = i * 7 + j + 1;
+                                Console.Write("{0,3}", matrica[i, j]);
+                                /*Za i=0 i j=0, vrijednost i * 7 + j + 1 je 0 * 7 + 0 + 1 = 1,
+                                 * što je prvi broj u matrici. Za i=1 i j=0, vrijednost je 1 * 7 + 0 + 1 = 8,
+                                 * što je drugi redak u matrici i prvi stupac.*/
+                            }
+
+                            Console.WriteLine();
+                        }
+                        // Spremanje listića u .txt datoteku
+                        string filePath = @"D:\LottoTicket.txt";
+                        using (StreamWriter writer = new StreamWriter(filePath))
+                        {
+                            writer.WriteLine("Loto 6 od 49 - Ticket");
+                            writer.WriteLine();
+                            for (int i = 0; i < 7; i++)
+                            {
+                                for (int j = 0; j < 7; j++)
+                                {
+                                    writer.Write("{0,3}", matrica[i, j]);
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                        Console.WriteLine("The ticket is saved to a file {0}.", filePath);
+
                         break;
+
                     case 7:
+
+                        Console.WriteLine("Input 4 people (First Name, Last Name, Date of Birth (dd/mm/yyyy) and Sex (M/F)) ");
+                        List<Person> persons = new List<Person>();
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            Console.WriteLine("Enter person number {0}: ", i + 1);
+
+                            Console.Write("First Name: ");
+                            string firstName = Methods.ReadStringInput(50);
+
+                            Console.Write("Last Name: ");
+                            string lastName = Methods.ReadStringInput(50);
+
+                            Console.Write("Date of Birth (dd/mm/yyyy): ");
+                            DateTime dateOfBirth = Methods.ReadDateTimeInput(new DateTime(1900,1,1), new DateTime(2020,12,30) );
+
+                            Console.Write("Sex (M/F): ");
+                            string[] validInputs = new string[2] {"M", "F" };
+                            string sex = Methods.ReadSexInput(validInputs);
+
+                            persons.Add(new Person
+                            {
+                                firstName = firstName,
+                                lastName = lastName,
+                                dateOfBirth = dateOfBirth,
+                                sex = sex
+                            });
+                        }
+
+                        Statistics statistics = new Statistics
+                        {
+                            youngestPerson = FindYoungestPerson(persons),
+                            oldestPerson = FindOldestPerson(persons),
+                            numberOfMan = CountNumberOfMan(persons),
+                            numberOfWoman = CountNumberOfWoman(persons),
+                            numberOfPeopleBornBefore2000 = CountNumberOfPeopleBornBefore2000(persons)
+                        };
+
+                        Console.WriteLine("Statistics: ");
+                        Console.WriteLine("Youngest person: {0}", statistics.youngestPerson);
+                        Console.WriteLine("Oldest person: {0}", statistics.oldestPerson);
+                        Console.WriteLine("Number of men: {0}", statistics.numberOfMan);
+                        Console.WriteLine("Number of women: {0}", statistics.numberOfWoman);
+                        Console.WriteLine("Number of people born before 2000: {0}", statistics.numberOfPeopleBornBefore2000);
+
+                        Console.ReadLine();
+
                         break;
+
                     case 8:
                         break;
                 }
